@@ -23,14 +23,14 @@ namespace NinetyNineBottles
                      (n == 0 ? "99 bottles" : 
                      (n == 2 ? "1 bottle" : n.ToString() + " bottles")),
                Action = n == 0 ? "Go to the store and buy some more" : 
-                                 "Take one down and pass it around"
-             }).Reverse();
+                                 "Print it out, stand up and shout"
+             });
 
         foreach (var beer in beers)
         {
-            beerLyric.AppendFormat("{0} of beer on the wall, {1} of beer.{2}",
+            beerLyric.AppendFormat("{0} of text on the screen, {1} of text.{2}",
                                     beer.Say, beer.Say.ToLower(), nl);
-            beerLyric.AppendFormat("{0}, {1} of beer on the wall.{2}", 
+            beerLyric.AppendFormat("{0}, {1} of text on the screen.{2}", 
                                     beer.Action, beer.Next, nl);
             beerLyric.AppendLine();
         }
