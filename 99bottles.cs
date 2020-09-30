@@ -29,6 +29,28 @@ namespace NinetyNineBottles
             WriteBeer(lines);
         }
 
+        //take a number n and return a string that is n in factored form
+    static string PrimeFactors(int n){
+      string factors = "("; //string that will contain the prime factors
+      //return empty paranthesis if n == 0 || 1
+      if(n == 0 || n == 1)
+        return "()";
+      else{
+        for(int i = 2; n > 1; i++){
+          if(n % i == 0){
+            //while loop to check how many times i is a prime factor
+            while(n % i == 0){
+              n /= i;
+              if(factors.Length == 1)
+                factors += i.ToString(); //first one, no * between them
+              else
+                factors += "*" + i.ToString(); //seperate with *
+            }
+          }
+        }
+      }
+      return factors + ")";
+    }
 
         static void Main(string[] args)
         {
@@ -42,16 +64,24 @@ namespace NinetyNineBottles
         }
 
         static void WriteBeer(int lines) {
-            StringBuilder beerLyric = new StringBuilder();
-            string nl = System.Environment.NewLine;
+            Random r = new Random(); //Random object to generate random numbers
+      StringBuilder beerLyric = new StringBuilder(); //final output
+      string nl = System.Environment.NewLine; //convienient nl char
+      //list holding the numbers to be outputted
+      List<int> Numbers = new List<int>();
+
+      //for loop to generate lists of numbers to output incrementing by rand
+      //num between 1 and 10
+      for(int i = 1; i < 100; i += r.Next(1, lines))
+        Numbers.Add(i);
             var beers =
-                (from n in Enumerable.Range(0, lines)
+                (from n in Numbers
                  select new { 
                  Say =  n == 0 ? "No more lines" : 
-                 (n == 1 ? "1 line" : n.ToString() + " lines"),
+                 (n == 1 ? "1 line" : PrimeFactors(n) + " lines"),
                  Next = n == 1 ? "no more lines" : 
                  (n == 0 ? "99 lines" : 
-                  (n == 2 ? "1 line" : n.ToString() + " lines")),
+                  (n == 2 ? "1 line" : PrimeFacots(n) + " lines")),
                  Action = n == 0 ? "Go to the store and buy some more" : 
                  "Print it out, stand up and shout"
                  });
@@ -65,7 +95,6 @@ namespace NinetyNineBottles
                 beerLyric.AppendLine();
             }
             Console.WriteLine(beerLyric.ToString());
-            Console.ReadLine();
         }
     }
 }
