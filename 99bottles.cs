@@ -1,5 +1,6 @@
 /// A short and sweet C# 3.5 / LINQ implementation of 99 Bottles of Beer
 /// Jeff Dietrich, jd@discordant.org - October 26, 2007
+// Revised and worked on by MIDN Sean Moriarty and MIDN Donald Jones 01 OCT 20
 
 using System;
 using System.Linq;
@@ -64,7 +65,22 @@ namespace NinetyNineBottles
             Application.Run();
 
         }
+       
+        //Helper function to find the next factorization to display in the
+        //output based on the list of random numbers created
+        static string NextFactor(List<int> Numbers, int lastFactor){
+            Random r = new Random(); //Random object to generate random numbers
+            try{
+                //return the next index of the array if it exists
+                return PrimeFactors(Numbers[Numbers.IndexOf(lastFactor) + 1]);
+            }catch(Exception e){
+                //return a number that is between 1 and 10 more than before
+                return PrimeFactors(Numbers[Numbers.IndexOf(lastFactor)] +
+                    r.Next(1,10)); 
+            }
+        }
 
+        //writes the lyrics to stdout
         static void WriteBeer(int lines) {
             Random r = new Random(); //Random object to generate random numbers
             StringBuilder beerLyric = new StringBuilder(); //final output
@@ -76,18 +92,22 @@ namespace NinetyNineBottles
             //num between 1 and 10
             for(int i = 1; i < lines; i += r.Next(1, 10))
                 Numbers.Add(i);
+
+            //creates an Enumerable object that fills lyrics in with given numbers
             var beers =
                 (from n in Numbers
                  select new { 
                  Say =  n == 0 ? "No more lines" : 
                  (n == 1 ? "() line" : PrimeFactors(n) + " lines"),
-                 Next = n == 1 ? "no more lines" : 
+                 Next = n == 1 ? NextFactor(Numbers, n) + " lines" : 
                  (n == 0 ? "99 lines" : 
-                  (n == 2 ? PrimeFactors(n+1)+" line" : PrimeFactors(n+1)+" lines")),
+                  (n == 2 ? NextFactor(Numbers, n)+" line" :
+                   NextFactor(Numbers, n)+" lines")),
                  Action = n == 0 ? "Go to the store and buy some more" : 
                  "Print it out, stand up and shout"
                  });
 
+            //goes through Enumerable object and adds each to the StringBuilder
             foreach (var beer in beers)
             {
                 beerLyric.Clear(); //clear beerLyric for next line
