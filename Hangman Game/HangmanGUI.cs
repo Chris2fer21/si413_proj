@@ -17,7 +17,7 @@ namespace Hangman
         private Button guessLetterButton;
         private PictureBox hangedMan;
         private Label currentWord;
-        private string currentWord_String;
+        private Hangman hangman;
         private ListBox alphabetList;
         //dimensions of whatever Hangman picture is loaded
         private readonly int PICTURE_WIDTH = 300;
@@ -26,7 +26,8 @@ namespace Hangman
           "Hangmen/Hangman1.jpg", "Hangmen/Hangman2.jpg", "Hangmen/Hangman3.jpg",
           "Hangmen/Hangman4.jpg", "Hangmen/Hangman5.jpg", "Hangmen/Hangman6.jpg"};
 
-        public HangmanForm(string word){
+        public HangmanForm(){
+            hangman = new Hangman();
             currentWord_String = word;
             this.StartPosition = FormStartPosition.CenterScreen;
             
@@ -70,9 +71,8 @@ namespace Hangman
             currentWord.AutoSize = true;
             currentWord.Font = new Font("Arial", 16);
             
-            string text = "";
-            for(int i = 0; i < currentWord_String.Length; i++)
-                text += "_ ";
+            //get the current progress on the word
+            string text = hangman.progress();
             currentWord.Text = text;
             currentWord.Location = new
               Point(((this.Width/2)-(currentWord.Width/2))+this.Width/4,
@@ -96,7 +96,6 @@ namespace Hangman
         private void CreateResetButton(){
             resetButton = new Button();
             resetButton.AutoSize = true;
-            //resetButton.Size = new Size(40, 40);
             resetButton.Location = new Point(5, 5);
             resetButton.Text = "Reset Game";
             this.Controls.Add(resetButton);
@@ -138,11 +137,22 @@ namespace Hangman
         //When reset button clicked, reset the game
         private void resetButton_Click(object sender, EventArgs e){
             Application.Exit();
-            Application.Run(new HangmanForm("Sean"));
+            Application.Run(new HangmanForm());
         }
 
+        //onClick method for guessing a new letter 
         private void guessLetterButton_Click(object sender, EventArgs e){
-            //MessageBox.Show("Hey ya'll");
+            //send current selected letter to Hangman *DO ERROR CHECKING
+            //LATER* that returns a bool if the game is over or not
+            if(alphabetList.SelectedItem == null)
+                MessageBox.Show("Please select a letter to guess with!");
+
+            bool gameOver = hangman.guess(alphabetList.SelectedItem.ToString());
+            currentWord.Text = hangman.progress;
+            //update image to reflect any changes in number of wrong guesses
+            hangedMan.Image = Image.FromFile(filenames[hangman.wrong]);
+
+            //update the GUI to reflect the change
             alphabetList.BeginUpdate();
             alphabetList.Items.Remove(alphabetList.SelectedItem);
             alphabetList.EndUpdate();

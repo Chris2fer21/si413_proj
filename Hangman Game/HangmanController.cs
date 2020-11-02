@@ -36,7 +36,7 @@ namespace Hangman
 
         private void startGameButton_Click(object sender, EventArgs e){
             Application.Exit(); 
-            Application.Run(new HangmanForm("Sean"));
+            Application.Run(new HangmanForm());
         }
 
         //called everytime the screen is resized
