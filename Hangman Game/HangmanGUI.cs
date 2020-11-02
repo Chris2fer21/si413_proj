@@ -72,7 +72,7 @@ namespace Hangman
             currentWord.Font = new Font("Arial", 16);
             
             //get the current progress on the word
-            string text = hangman.progress();
+            string text = hangman.progress;
             currentWord.Text = text;
             currentWord.Location = new
               Point(((this.Width/2)-(currentWord.Width/2))+this.Width/4,
