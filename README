@@ -1,0 +1,10 @@
+1/C Donald Jones 213228
+1/C Sean Moriarty 214728
+
+To compile, enter the following line in the terminal:
+
+mcs 99bottles.cs -pkg:gtk-sharp-2.0
+
+To run, enter the following line in the terminal:
+
+mono 99bottles.exe
