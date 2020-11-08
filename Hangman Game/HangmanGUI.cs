@@ -15,10 +15,12 @@ namespace Hangman
     {
         private Button resetButton;
         private Button guessLetterButton;
+        private Button guessWordButton;
         private PictureBox hangedMan;
         private Label currentWord;
         private Hangman hangman;
         private ListBox alphabetList;
+        private MaskedTextBox guessWordBox;
         //dimensions of whatever Hangman picture is loaded
         private readonly int PICTURE_WIDTH = 300;
         private readonly int PICTURE_HEIGHT = 300;
@@ -35,13 +37,20 @@ namespace Hangman
             CreateHangedMan();
             CreateCurrentWord();
             CreateAlphabetList();
-            
+            CreateGuessWordBox();
+            CreateGuessWordButton();
+
             this.Size = new Size(700, 700);
             this.Text = "Hangman";
             this.BackColor = Color.FromName("white");
-            //MaskedTextBox mtb = new MaskedTextBox();
-            //mtb.Location = new Point(100,100);
-            //this.Controls.Add(mtb);
+        }
+
+        private void CreateGuessWordBox(){
+            guessWordBox = new MaskedTextBox();
+            guessWordBox.Mask = "L"; //restricts text to only a-z A-Z
+            guessWordBox.Location = new 
+              Point((this.Width/2)-(guessWordBox.Width/2), 10);
+            this.Controls.Add(guessWordBox);
         }
 
         private void CreateAlphabetList()
@@ -91,6 +100,18 @@ namespace Hangman
             this.Controls.Add(hangedMan);
         }
 
+        //initialize the guess word button
+        private void CreateGuessWordButton(){
+            guessWordButton = new Button();
+            guessWordButton.AutoSize = true;
+            guessWordButton.Location = new
+              Point((this.Width/2)-(guessWordButton.Width/2),
+                  guessWordBox.Height + 20);
+            guessWordButton.Text = "Guess Word";
+            this.Controls.Add(guessWordButton);
+            guessWordButton.Click += new EventHandler(guessWordButton_Click);
+        }
+
         //initialize the reset game button
         private void CreateResetButton(){
             resetButton = new Button();
@@ -120,7 +141,10 @@ namespace Hangman
             the right
             currentWord: 3/4 of the way across the page and halfway down
             alphabetList: Top right of the window
-            createGuessLetterButton: 3/4 across the top of the window  */
+            createGuessLetterButton: 3/4 across the top of the window
+            guessWordBox: halfway across the top of the screen
+            guessWordButton: halfway across screen below guessWordBox
+             */
             hangedMan.Location = new Point(((this.Width/2)-(PICTURE_WIDTH/2))/2,
                 (this.Height / 2) - (PICTURE_HEIGHT/2));
             currentWord.Location = new
@@ -130,32 +154,77 @@ namespace Hangman
                 alphabetList.Width - 10, 5);
             guessLetterButton.Location = new
               Point(((this.Width/2)-(guessLetterButton.Width/2))+this.Width/4, 10);
+            guessWordBox.Location = new 
+              Point((this.Width/2)-(guessWordBox.Width/2), 10);
+            guessWordButton.Location = new
+              Point((this.Width/2)-(guessWordButton.Width/2),
+                  guessWordBox.Height + 20);
+
+        }
+
+        //ensure that the game exits properly upon the closing of the window
+        protected override void OnClosed(EventArgs e){
+            base.OnClosed(e);
+            Application.Exit();
+        }
+        
+        //resets the game from the beginning with new word
+        private void ResetGame(){
+            Application.Exit();
+            Application.Run(new HangmanForm());
+
+        }
+
+        private void guessWordButton_Click(object sender, EventArgs e){
 
         }
 
         //When reset button clicked, reset the game
         private void resetButton_Click(object sender, EventArgs e){
-            Application.Exit();
-            Application.Run(new HangmanForm());
+            ResetGame();
+        }
+
+        /*method that checks if the game is over based on number of guesses
+          made or if the word was guessed
+          Returns true if the game is over, false otherwise 
+         */
+        private bool GameOver(bool wordGuessed){
+            string messageTitle = "Game Results";
+            if(wordGuessed){
+                MessageBox.Show("Congratulations you won!", messageTitle);
+                return true;
+            }
+            else if(hangman.Wrong == 6){ //too many wrong guesses
+                MessageBox.Show("Too many wrong guesses, you lost!",
+                    messageTitle);
+                return true;
+            }
+            else
+                return false;
         }
 
         //onClick method for guessing a new letter 
         private void guessLetterButton_Click(object sender, EventArgs e){
-            //send current selected letter to Hangman *DO ERROR CHECKING
-            //LATER* that returns a bool if the game is over or not
+            //send current selected letter to Hangman 
+            //that returns a bool if the word is fully guessed or not
             if(alphabetList.SelectedItem == null)
                 MessageBox.Show("Please select a letter to guess with!");
+            
             char guessedLetter = Convert.ToChar(alphabetList.SelectedItem);
-            Console.WriteLine("Letter: "+guessedLetter);
-            bool gameOver = hangman.guess(guessedLetter);
-            currentWord.Text = hangman.Progress;
-            //update image to reflect any changes in number of wrong guesses
-            hangedMan.Image = Image.FromFile(filenames[hangman.Wrong]);
-
             //update the GUI to reflect the change
             alphabetList.BeginUpdate();
             alphabetList.Items.Remove(alphabetList.SelectedItem);
             alphabetList.EndUpdate();
+
+            //***DEBUGING CODE DELETE LATER*****
+            Console.WriteLine("Letter: "+guessedLetter);
+            bool wordGuessed = hangman.guess(guessedLetter);
+            currentWord.Text = hangman.Progress;
+            //update image to reflect any changes in number of wrong guesses
+            hangedMan.Image = Image.FromFile(filenames[hangman.Wrong]);
+            //if the game is over then reset the game
+            if(GameOver(wordGuessed))
+                ResetGame();
         }
 
         /*

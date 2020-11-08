@@ -38,6 +38,7 @@ namespace Hangman {
             }
         }
         public bool guess(char s) {
+            //****DEBUGGING CODE DELETE LATER***
             Console.WriteLine(word);
             Console.WriteLine(progress);
             if (!used.Contains(s.ToString())) {
