@@ -29,7 +29,7 @@ namespace Hangman {
         }
 
         public bool guess(string s) {
-            if (s.Equals(word)) {
+            if (s == word) {
                 return true;
             }
             else {

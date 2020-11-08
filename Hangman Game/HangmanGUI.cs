@@ -47,7 +47,7 @@ namespace Hangman
 
         private void CreateGuessWordBox(){
             guessWordBox = new MaskedTextBox();
-            guessWordBox.Mask = "L"; //restricts text to only a-z A-Z
+            //guessWordBox.Mask = "a*"; //restricts text to only a-z A-Z
             guessWordBox.Location = new 
               Point((this.Width/2)-(guessWordBox.Width/2), 10);
             this.Controls.Add(guessWordBox);
@@ -176,7 +176,19 @@ namespace Hangman
         }
 
         private void guessWordButton_Click(object sender, EventArgs e){
-
+            //get text from text box
+            string guess = guessWordBox.Text.ToLower();
+            //***DEBUGING CODE DELETE LATER*****
+            Console.WriteLine("Word: "+guess);
+            if(guess == "")
+                MessageBox.Show("Please type in a word to guess with!");
+            else{
+                bool wordGuessed = hangman.guess(guess);
+                //update image to reflect number of wrong guesses
+                hangedMan.Image = Image.FromFile(filenames[hangman.Wrong]);
+                if(GameOver(wordGuessed))
+                    ResetGame();
+            }
         }
 
         //When reset button clicked, reset the game
@@ -195,8 +207,8 @@ namespace Hangman
                 return true;
             }
             else if(hangman.Wrong == 6){ //too many wrong guesses
-                MessageBox.Show("Too many wrong guesses, you lost!",
-                    messageTitle);
+                MessageBox.Show("Too many wrong guesses, you lost!\nThe word was: "
+                    +hangman.Word, messageTitle);
                 return true;
             }
             else
@@ -209,22 +221,23 @@ namespace Hangman
             //that returns a bool if the word is fully guessed or not
             if(alphabetList.SelectedItem == null)
                 MessageBox.Show("Please select a letter to guess with!");
-            
-            char guessedLetter = Convert.ToChar(alphabetList.SelectedItem);
-            //update the GUI to reflect the change
-            alphabetList.BeginUpdate();
-            alphabetList.Items.Remove(alphabetList.SelectedItem);
-            alphabetList.EndUpdate();
+            else{
+                char guessedLetter = Convert.ToChar(alphabetList.SelectedItem);
+                //update the GUI to reflect the change
+                alphabetList.BeginUpdate();
+                alphabetList.Items.Remove(alphabetList.SelectedItem);
+                alphabetList.EndUpdate();
 
-            //***DEBUGING CODE DELETE LATER*****
-            Console.WriteLine("Letter: "+guessedLetter);
-            bool wordGuessed = hangman.guess(guessedLetter);
-            currentWord.Text = hangman.Progress;
-            //update image to reflect any changes in number of wrong guesses
-            hangedMan.Image = Image.FromFile(filenames[hangman.Wrong]);
-            //if the game is over then reset the game
-            if(GameOver(wordGuessed))
-                ResetGame();
+                //***DEBUGING CODE DELETE LATER*****
+                Console.WriteLine("Letter: "+guessedLetter);
+                bool letterGuessed = hangman.guess(guessedLetter);
+                currentWord.Text = hangman.Progress;
+                //update image to reflect any changes in number of wrong guesses
+                hangedMan.Image = Image.FromFile(filenames[hangman.Wrong]);
+                //if the game is over then reset the game
+                if(GameOver(letterGuessed))
+                    ResetGame();
+            }
         }
 
         /*
