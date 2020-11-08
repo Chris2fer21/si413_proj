@@ -18,9 +18,12 @@ namespace Hangman
         private Button guessWordButton;
         private PictureBox hangedMan;
         private Label currentWord;
+        private Label scoreLabel;
         private Hangman hangman;
+        private Player player;
         private ListBox alphabetList;
         private MaskedTextBox guessWordBox;
+        private int computerScore;
         //dimensions of whatever Hangman picture is loaded
         private readonly int PICTURE_WIDTH = 300;
         private readonly int PICTURE_HEIGHT = 300;
@@ -28,7 +31,9 @@ namespace Hangman
           "Hangmen/Hangman1.jpg", "Hangmen/Hangman2.jpg", "Hangmen/Hangman3.jpg",
           "Hangmen/Hangman4.jpg", "Hangmen/Hangman5.jpg", "Hangmen/Hangman6.jpg"};
 
-        public HangmanForm(){
+        //Constructor that creates all the elements of the GUI and sets
+        //parameters of the window
+        public HangmanForm(int computerScore, int playerScore){
             hangman = new Hangman();
             this.StartPosition = FormStartPosition.CenterScreen;
             
@@ -39,10 +44,26 @@ namespace Hangman
             CreateAlphabetList();
             CreateGuessWordBox();
             CreateGuessWordButton();
+            player = new Player(playerScore);
+            this.computerScore = computerScore;
+            CreateScoreLabel();
 
             this.Size = new Size(700, 700);
             this.Text = "Hangman";
             this.BackColor = Color.FromName("white");
+        }
+
+        private void CreateScoreLabel(){
+            scoreLabel = new Label();
+            scoreLabel.AutoSize = true;
+            scoreLabel.Font = new Font("Arial", 16);
+            string text = "Current Score: Player "+player.Score+" - Computer "+
+              computerScore;
+            scoreLabel.Text = text;
+            scoreLabel.Location = new
+              Point((this.Width/2)-(scoreLabel.Width/2), this.Height -
+                  scoreLabel.Height - 10);  
+            this.Controls.Add(scoreLabel); 
         }
 
         private void CreateGuessWordBox(){
@@ -136,6 +157,13 @@ namespace Hangman
         //called everytime the screen is resized
         protected override void OnResize(EventArgs e){
             base.OnResize(e);
+            //ensure that the form is not made too small to see everything
+            //properly
+            if(this.Width < 550)
+                this.Width = 550;
+            if(this.Height < 550)
+                this.Height = 550;
+            
             /*update the positions based on new size
             Hangedman image: position is halfway down and a quarter of the way across from
             the right
@@ -144,6 +172,7 @@ namespace Hangman
             createGuessLetterButton: 3/4 across the top of the window
             guessWordBox: halfway across the top of the screen
             guessWordButton: halfway across screen below guessWordBox
+            scoreLabel: halfway across and all the way down
              */
             hangedMan.Location = new Point(((this.Width/2)-(PICTURE_WIDTH/2))/2,
                 (this.Height / 2) - (PICTURE_HEIGHT/2));
@@ -159,7 +188,9 @@ namespace Hangman
             guessWordButton.Location = new
               Point((this.Width/2)-(guessWordButton.Width/2),
                   guessWordBox.Height + 20);
-
+            scoreLabel.Location = new
+              Point((this.Width/2)-(scoreLabel.Width/2), this.Height -
+                  scoreLabel.Height - 30);
         }
 
         //ensure that the game exits properly upon the closing of the window
@@ -171,7 +202,7 @@ namespace Hangman
         //resets the game from the beginning with new word
         private void ResetGame(){
             Application.Exit();
-            Application.Run(new HangmanForm());
+            Application.Run(new HangmanForm(computerScore, player.Score));
 
         }
 
@@ -193,7 +224,14 @@ namespace Hangman
 
         //When reset button clicked, reset the game
         private void resetButton_Click(object sender, EventArgs e){
-            ResetGame();
+            string title = "Reset Game";
+            string text = "Are you sure you want to reset the game?";
+            MessageBoxButtons buttons = MessageBoxButtons.YesNo;
+            //create a message box with the options yes or no to ensure user
+            //wants to reset the game
+            DialogResult result = MessageBox.Show(text, title, buttons);
+            if(result == DialogResult.Yes)
+                ResetGame();
         }
 
         /*method that checks if the game is over based on number of guesses
@@ -204,11 +242,13 @@ namespace Hangman
             string messageTitle = "Game Results";
             if(wordGuessed){
                 MessageBox.Show("Congratulations you won!", messageTitle);
+                player.UpdateScore();
                 return true;
             }
             else if(hangman.Wrong == 6){ //too many wrong guesses
                 MessageBox.Show("Too many wrong guesses, you lost!\nThe word was: "
                     +hangman.Word, messageTitle);
+                computerScore++;
                 return true;
             }
             else
