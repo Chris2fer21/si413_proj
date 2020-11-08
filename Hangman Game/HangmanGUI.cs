@@ -34,7 +34,7 @@ namespace Hangman
         //Constructor that creates all the elements of the GUI and sets
         //parameters of the window
         public HangmanForm(int computerScore, int playerScore){
-            hangman = new Hangman();
+            hangman = new Hangman(1);
             this.StartPosition = FormStartPosition.CenterScreen;
             
             CreateResetButton();
