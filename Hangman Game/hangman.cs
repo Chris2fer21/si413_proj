@@ -2,12 +2,21 @@ using System;
 
 namespace Hangman {
     class Hangman {
-        string used = "";
-        string word;
-        int wrong = 0;
-        string progress; //return as a string
+        private string used;
+        public string Used
+        { get{return used;} }
+        private string word;
+        public string Word
+        { get{return word;}}
+        private int wrong;
+        public int Wrong
+        {get{return wrong;} }
+        private string progress;
+        public string Progress
+        {get{return progress;}} //return as a string
 
         public Hangman() {
+            used = "";
             var rand = new Random();
             string[] lines = System.IO.File.ReadAllLines
                 ("words.txt");
@@ -29,6 +38,8 @@ namespace Hangman {
             }
         }
         public bool guess(char s) {
+            Console.WriteLine(word);
+            Console.WriteLine(progress);
             if (!used.Contains(s.ToString())) {
                 if (word.Contains(s.ToString())) {
                     char[] p = progress.ToCharArray();
@@ -60,6 +71,5 @@ namespace Hangman {
                 Console.WriteLine(h.used);
                 Console.WriteLine();
             }*/
-        }
     }
 }

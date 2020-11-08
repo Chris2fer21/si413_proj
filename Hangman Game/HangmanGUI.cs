@@ -28,7 +28,6 @@ namespace Hangman
 
         public HangmanForm(){
             hangman = new Hangman();
-            currentWord_String = word;
             this.StartPosition = FormStartPosition.CenterScreen;
             
             CreateResetButton();
@@ -59,7 +58,7 @@ namespace Hangman
             alphabetList.BeginUpdate();
             // Loop through and add all the letters of the alphabet based on
             // ascii value
-            for (int i = 65; i < 91; i++)
+            for (int i = 97; i < 123; i++)
               alphabetList.Items.Add(((char)i).ToString());
             // Allow the ListBox to repaint and display the new items.
             alphabetList.EndUpdate();
@@ -72,7 +71,7 @@ namespace Hangman
             currentWord.Font = new Font("Arial", 16);
             
             //get the current progress on the word
-            string text = hangman.progress;
+            string text = hangman.Progress;
             currentWord.Text = text;
             currentWord.Location = new
               Point(((this.Width/2)-(currentWord.Width/2))+this.Width/4,
@@ -146,11 +145,12 @@ namespace Hangman
             //LATER* that returns a bool if the game is over or not
             if(alphabetList.SelectedItem == null)
                 MessageBox.Show("Please select a letter to guess with!");
-
-            bool gameOver = hangman.guess(alphabetList.SelectedItem.ToString());
-            currentWord.Text = hangman.progress;
+            char guessedLetter = Convert.ToChar(alphabetList.SelectedItem);
+            Console.WriteLine("Letter: "+guessedLetter);
+            bool gameOver = hangman.guess(guessedLetter);
+            currentWord.Text = hangman.Progress;
             //update image to reflect any changes in number of wrong guesses
-            hangedMan.Image = Image.FromFile(filenames[hangman.wrong]);
+            hangedMan.Image = Image.FromFile(filenames[hangman.Wrong]);
 
             //update the GUI to reflect the change
             alphabetList.BeginUpdate();
