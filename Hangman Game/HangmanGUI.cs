@@ -14,6 +14,7 @@ namespace Hangman
     public class HangmanForm : Form
     {
         private Button resetButton;
+        private Button newGameButton;
         private Button guessLetterButton;
         private Button guessWordButton;
         private PictureBox hangedMan;
@@ -45,11 +46,14 @@ namespace Hangman
             CreateAlphabetList();
             CreateGuessWordBox();
             CreateGuessWordButton();
+            CreateNewGameButton();
             player = new Player(playerScore);
             this.computerScore = computerScore;
             CreateScoreLabel();
 
             this.Size = new Size(700, 700);
+            //smaller than this and everything looks weird
+            this.MinimumSize = new Size(550, 550);
             this.Text = "Hangman";
             this.BackColor = Color.FromName("white");
         }
@@ -122,6 +126,18 @@ namespace Hangman
             this.Controls.Add(hangedMan);
         }
 
+        //initialize the new game button
+        private void CreateNewGameButton(){
+            newGameButton = new Button();
+            newGameButton.AutoSize = true;
+            //place new game button right below reset game button
+            newGameButton.Location = new 
+              Point(5, resetButton.Height + 15);
+            newGameButton.Text = "New Game";
+            this.Controls.Add(newGameButton);
+            newGameButton.Click += new EventHandler(newGameButton_Click);
+        }
+
         //initialize the guess word button
         private void CreateGuessWordButton(){
             guessWordButton = new Button();
@@ -158,13 +174,6 @@ namespace Hangman
         //called everytime the screen is resized
         protected override void OnResize(EventArgs e){
             base.OnResize(e);
-            //ensure that the form is not made too small to see everything
-            //properly
-            if(this.Width < 550)
-                this.Width = 550;
-            if(this.Height < 550)
-                this.Height = 550;
-            
             /*update the positions based on new size
             Hangedman image: position is halfway down and a quarter of the way across from
             the right
@@ -206,6 +215,23 @@ namespace Hangman
             Application.Run(new HangmanForm(computerScore, player.Score,
                   difficulty));
 
+        }
+
+        //When new game button pressed, return to HangmanController to start a
+        //new game
+        private void newGameButton_Click(object sender, EventArgs e){
+            string title = "New Game";
+            string text = "Are you sure you want to start a new game?\n";
+            text += "You will lose your current score and\n";
+            text += " get to choose difficulty again.";
+            MessageBoxButtons buttons = MessageBoxButtons.YesNo;
+            //create a message box with the options yes or no to ensure user
+            //wants to reset the game
+            DialogResult result = MessageBox.Show(text, title, buttons);
+            if(result == DialogResult.Yes){
+              Application.Exit();
+              Application.Run(new HangmanController());
+            }
         }
 
         private void guessWordButton_Click(object sender, EventArgs e){
@@ -281,13 +307,5 @@ namespace Hangman
                     ResetGame();
             }
         }
-
-        /*
-        [STAThread]
-        static void Main(){
-            Application.EnableVisualStyles();
-            Application.Run(new HangmanForm("Sean"));
-        }
-        */
     }
 }

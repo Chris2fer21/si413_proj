@@ -20,12 +20,18 @@ namespace Hangman
             this.StartPosition = FormStartPosition.CenterScreen;
             CreateStartGameButton();
             CreateMyMainMenu();
+
             this.Size = new Size(700, 700);
+            this.MinimumSize = new Size(550, 550);
             this.Text = "Hangman";
             this.BackColor = Color.FromName("white");
         }
 
-        public void CreateMyMainMenu(){
+        /*
+           Method that builds a mainmenu at the top of the window allowing
+           for the difficulty of the game to be chosen
+        */
+        private void CreateMyMainMenu(){
             // Create an empty MainMenu.
             MainMenu mainMenu = new MainMenu();
 
@@ -39,7 +45,8 @@ namespace Hangman
             medium.Text = "Medium";
             hard.Text = "Hard";
 
-            // Add two MenuItem objects to the MainMenu.
+            // Add difficulty menu to main menu and difficulties to the
+            // difficulty menu
             mainMenu.MenuItems.Add(difficulty);
             difficulty.MenuItems.Add(easy);
             difficulty.MenuItems.Add(medium);
@@ -101,6 +108,12 @@ namespace Hangman
                     Application.Run(new HangmanForm(0, 0, 2));
                     break;
             }
+        }
+
+        //ensure that the controller exits properly upon the closing of the window
+        protected override void OnClosed(EventArgs e){
+            base.OnClosed(e);
+            Application.Exit();
         }
 
         //called everytime the screen is resized
