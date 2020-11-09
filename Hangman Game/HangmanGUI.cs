@@ -23,7 +23,7 @@ namespace Hangman
         private Player player;
         private ListBox alphabetList;
         private MaskedTextBox guessWordBox;
-        private int computerScore;
+        private int computerScore, difficulty;
         //dimensions of whatever Hangman picture is loaded
         private readonly int PICTURE_WIDTH = 300;
         private readonly int PICTURE_HEIGHT = 300;
@@ -33,8 +33,9 @@ namespace Hangman
 
         //Constructor that creates all the elements of the GUI and sets
         //parameters of the window
-        public HangmanForm(int computerScore, int playerScore){
-            hangman = new Hangman(1);
+        public HangmanForm(int computerScore, int playerScore, int difficulty){
+            hangman = new Hangman(difficulty);
+            this.difficulty = difficulty;
             this.StartPosition = FormStartPosition.CenterScreen;
             
             CreateResetButton();
@@ -83,7 +84,7 @@ namespace Hangman
             alphabetList.Location = new System.Drawing.Point(this.Width -
                 alphabetList.Width - 5, 5);
             this.Controls.Add(alphabetList);
-
+        
             // Shutdown the painting of the ListBox as items are added.
             alphabetList.BeginUpdate();
             // Loop through and add all the letters of the alphabet based on
@@ -202,7 +203,8 @@ namespace Hangman
         //resets the game from the beginning with new word
         private void ResetGame(){
             Application.Exit();
-            Application.Run(new HangmanForm(computerScore, player.Score));
+            Application.Run(new HangmanForm(computerScore, player.Score,
+                  difficulty));
 
         }
 

@@ -14,15 +14,59 @@ namespace Hangman
      */
     public class HangmanController : Form{
         private Button startGameButton; 
+        private MenuItem difficulty;
 
         public HangmanController(){
             this.StartPosition = FormStartPosition.CenterScreen;
             CreateStartGameButton();
+            CreateMyMainMenu();
             this.Size = new Size(700, 700);
             this.Text = "Hangman";
             this.BackColor = Color.FromName("white");
         }
 
+        public void CreateMyMainMenu(){
+            // Create an empty MainMenu.
+            MainMenu mainMenu = new MainMenu();
+
+            difficulty = new MenuItem();
+            MenuItem easy = new MenuItem();
+            MenuItem medium = new MenuItem();
+            MenuItem hard = new MenuItem();
+
+            difficulty.Text = "Difficulty";
+            easy.Text = "Easy";
+            medium.Text = "Medium";
+            hard.Text = "Hard";
+
+            // Add two MenuItem objects to the MainMenu.
+            mainMenu.MenuItems.Add(difficulty);
+            difficulty.MenuItems.Add(easy);
+            difficulty.MenuItems.Add(medium);
+            difficulty.MenuItems.Add(hard);
+           
+            // Add functionality with a click method
+            easy.Click += new EventHandler(this.difficulty_Click);
+            medium.Click += new EventHandler(this.difficulty_Click);
+            hard.Click += new EventHandler(this.difficulty_Click);
+             
+            //Easy difficulty by default
+            easy.Checked = true;
+
+            // Bind the MainMenu to Hangman Controller
+            Menu = mainMenu;   
+        }
+
+        private void difficulty_Click(object sender, EventArgs e){
+            //Clear all checked MenuItems before checking the one clicked. 
+            foreach(MenuItem menu in difficulty.MenuItems)
+                menu.Checked = false;
+            
+            //Mark clicked menuitem as checked
+            ((MenuItem)sender).Checked = true;
+        }
+
+        //set parameters of the startGameButton
         private void CreateStartGameButton(){
             startGameButton = new Button();
             startGameButton.AutoSize = true;
@@ -34,9 +78,29 @@ namespace Hangman
             this.Controls.Add(startGameButton);  
         }
 
+        //enter into a new Hangman game when start game button is clicked
         private void startGameButton_Click(object sender, EventArgs e){
-            Application.Exit(); 
-            Application.Run(new HangmanForm(0, 0));
+            string difficultyLevel = "";
+            //find the currently checked difficulty level in the difficulty
+            //menu
+            foreach(MenuItem menu in difficulty.MenuItems){
+                if(menu.Checked)
+                    difficultyLevel = menu.Text;
+            }
+            
+            Application.Exit();
+            //switch on given difficulty level
+            switch(difficultyLevel){
+                case "Easy":
+                    Application.Run(new HangmanForm(0, 0, 0));
+                    break;
+                case "Medium":
+                    Application.Run(new HangmanForm(0, 0, 1));
+                    break;
+                case "Hard":
+                    Application.Run(new HangmanForm(0, 0, 2));
+                    break;
+            }
         }
 
         //called everytime the screen is resized

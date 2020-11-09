@@ -22,8 +22,8 @@ namespace Hangman {
 			string[] lines = System.IO.File.ReadAllLines
 				("wordlist.10000");
 			word = lines[rand.Next(0,lines.Length)];
-            while(difficulty(word)!=diff)
-                word = lines[rand.Next(0,lines.Length)];
+      while(difficulty(word)!=diff)
+          word = lines[rand.Next(0,lines.Length)];
 			char[] p = new char[word.Length];
 			for (int i=0;i<word.Length;i++) {
 				p[i] = '_';
@@ -74,7 +74,7 @@ namespace Hangman {
                     vowels_n++;
             }
             int score = word.Length * unique.Length * (6-vowels_n);
-            Console.WriteLine(score.ToString());
+            //Console.WriteLine(score.ToString());
             if (score<2000)
                 return 0;
             if (score>10000)
