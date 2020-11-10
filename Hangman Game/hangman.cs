@@ -16,6 +16,7 @@ namespace Hangman {
         private string progress;
         public string Progress
         {get{return progress;}} //return as a string
+        private bool debug = false;
 
         // Contructor for a game of hangman
         // param diff is the requested difficulty of the word
@@ -49,6 +50,8 @@ namespace Hangman {
 
         // method to guess a letter in the word
         public bool guess(char s) {
+            if(debug)
+                Console.WriteLine("Word: "+word);
             if (!used.Contains(s.ToString())) {
                 if (word.Contains(s.ToString())) {
                     char[] p = progress.ToCharArray();

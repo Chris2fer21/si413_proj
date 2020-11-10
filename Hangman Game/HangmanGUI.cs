@@ -32,8 +32,12 @@ namespace Hangman
           "Hangmen/Hangman1.jpg", "Hangmen/Hangman2.jpg", "Hangmen/Hangman3.jpg",
           "Hangmen/Hangman4.jpg", "Hangmen/Hangman5.jpg", "Hangmen/Hangman6.jpg"};
 
-        //Constructor that creates all the elements of the GUI and sets
-        //parameters of the window
+        /*Constructor that creates all the elements of the GUI and sets
+          parameters of the window
+          computerScore: Score that the computer has
+          playerScore: score that the player has
+          difficulty: chosen difficulty of words to play the game with
+         */
         public HangmanForm(int computerScore, int playerScore, int difficulty){
             hangman = new Hangman(difficulty);
             this.difficulty = difficulty;
@@ -73,7 +77,6 @@ namespace Hangman
 
         private void CreateGuessWordBox(){
             guessWordBox = new MaskedTextBox();
-            //guessWordBox.Mask = "a*"; //restricts text to only a-z A-Z
             guessWordBox.Location = new 
               Point((this.Width/2)-(guessWordBox.Width/2), 10);
             this.Controls.Add(guessWordBox);
@@ -155,7 +158,7 @@ namespace Hangman
             resetButton = new Button();
             resetButton.AutoSize = true;
             resetButton.Location = new Point(5, 5);
-            resetButton.Text = "Reset Game";
+            resetButton.Text = "Reset Round";
             this.Controls.Add(resetButton);
             resetButton.Click += new EventHandler(resetButton_Click);
         }
@@ -237,8 +240,6 @@ namespace Hangman
         private void guessWordButton_Click(object sender, EventArgs e){
             //get text from text box
             string guess = guessWordBox.Text.ToLower();
-            //***DEBUGING CODE DELETE LATER*****
-            Console.WriteLine("Word: "+guess);
             if(guess == "")
                 MessageBox.Show("Please type in a word to guess with!");
             else{
@@ -253,7 +254,7 @@ namespace Hangman
         //When reset button clicked, reset the game
         private void resetButton_Click(object sender, EventArgs e){
             string title = "Reset Game";
-            string text = "Are you sure you want to reset the game?";
+            string text = "Are you sure you want to reset the round?";
             MessageBoxButtons buttons = MessageBoxButtons.YesNo;
             //create a message box with the options yes or no to ensure user
             //wants to reset the game
@@ -296,8 +297,6 @@ namespace Hangman
                 alphabetList.Items.Remove(alphabetList.SelectedItem);
                 alphabetList.EndUpdate();
 
-                //***DEBUGING CODE DELETE LATER*****
-                Console.WriteLine("Letter: "+guessedLetter);
                 bool letterGuessed = hangman.guess(guessedLetter);
                 currentWord.Text = hangman.Progress;
                 //update image to reflect any changes in number of wrong guesses
