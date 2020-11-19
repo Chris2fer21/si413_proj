@@ -93,8 +93,7 @@ namespace Hangman
             this.Controls.Add(guessWordBox);
         }
 
-        private void CreateAlphabetList()
-        {
+        private void CreateAlphabetList(){
             // Create an instance of the ListBox.
             alphabetList = new ListBox();
             // Set the size and location of the ListBox.
@@ -278,7 +277,7 @@ namespace Hangman
                 return true;
             }
             else if(hangman.Wrong == 6){ //too many wrong guesses
-                MessageBox.Show("Too many wrong guesses, you lost!\nThe word was: "
+                MessageBox.Show("Oh no, you lost!\nThe word was: "
                     +hangman.Word, messageTitle);
                 computerScore++;
                 return true;
