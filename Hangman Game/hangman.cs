@@ -15,7 +15,16 @@ namespace Hangman {
         {get{return wrong;} }
         private string progress;
         public string Progress
-        {get{return progress;}} //return as a string
+        {get{
+                string t = String.Copy(progress);
+                int n = (progress.Length-1) * 2;
+                Console.WriteLine(n);
+                for (int i=1; i<n; i+=2){
+                    t = t.Insert(i," ");
+                    Console.WriteLine(t);
+                }
+                return t;
+            }} //return as a string
         private bool debug = false;
 
         // Contructor for a game of hangman
@@ -43,7 +52,7 @@ namespace Hangman {
                 return true;
             }
             else {
-                wrong++;
+                wrong = 6;
                 return false;
             }
         }
@@ -92,18 +101,18 @@ namespace Hangman {
                 return 1;
         } 
 
-        /*static void Main(string[] args){
-            string[] lines = System.IO.File.ReadAllLines
-                                ("wordlist.10000");
-            List<int> scores = new List<int>();
-            for(int i=0;i<lines.Length;i++)
-                scores.Add(difficulty(lines[i]));
-
-            scores.Sort();
-            Console.WriteLine(scores[0]);
-            Console.WriteLine(scores[(int)(scores.Count*.33)]);
-            Console.WriteLine(scores[(int)(scores.Count*.67)]);
+        static void Main(string[] args){
             Hangman h = new Hangman(2);
-        }*/
+            Console.WriteLine(h.Word);
+            Console.WriteLine(h.Progress);
+            h.guess('e');
+            Console.WriteLine(h.Progress);
+            h.guess('i');
+            Console.WriteLine(h.Progress);
+            h.guess('o');
+            Console.WriteLine(h.Progress);
+            h.guess('u');
+            Console.WriteLine(h.Progress);
+        }
     }
 }
