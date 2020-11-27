@@ -18,10 +18,8 @@ namespace Hangman {
         {get{
                 string t = String.Copy(progress);
                 int n = (progress.Length-1) * 2;
-                Console.WriteLine(n);
                 for (int i=1; i<n; i+=2){
                     t = t.Insert(i," ");
-                    Console.WriteLine(t);
                 }
                 return t;
             }} //return as a string
@@ -101,7 +99,7 @@ namespace Hangman {
                 return 1;
         } 
 
-        static void Main(string[] args){
+        /*static void Main(string[] args){
             Hangman h = new Hangman(2);
             Console.WriteLine(h.Word);
             Console.WriteLine(h.Progress);
@@ -113,6 +111,6 @@ namespace Hangman {
             Console.WriteLine(h.Progress);
             h.guess('u');
             Console.WriteLine(h.Progress);
-        }
+        }*/
     }
 }
