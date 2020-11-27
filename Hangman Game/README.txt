@@ -27,17 +27,17 @@ the main Hangman game.
 Game Window:
 The game window (made with HangmanGUI) has everything you would expect out of
 a normal operation of Hangman. At the top right you will find a list of every
-letter of the alphabet to start with. As you select one and press the "Guess
-Letter" button, it will check if that letter is in the current unknown word.
+letter of the alphabet to start with. As you select one, it will check if that 
+letter is in the current unknown word.
 If it is in the word, the screen will display everywhere in the word it is in.
 If not, another part of the hanged man will be displayed on the screen. You
 can guess letters until you get the whole word or the man is drawn and you
-lose. When you win the score seen at the bottom of the window will update to
+lose. When you win, the score seen at the bottom of the window will update to
 reflect one point added to the player. If you lose, the computer gains one
 point. The next thing you have the ability to do if you think you know the
 whole word is to guess it outright. The top middle of the window has a text
 box to type your guess into, and after pressing the "Guess Word" button, your
-guess will be checked. If you are wrong another part of the man will be drawn,
+guess will be checked. If you are wrong, you lose the game,
 but if you are correct then you win the round. The "Reset Round" button at the
 top left of the window will reset the hanged man and give you a new word if
 you are not happy with your performance. The "New Game" button will take you

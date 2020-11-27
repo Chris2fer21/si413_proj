@@ -15,11 +15,11 @@ namespace Hangman
     {
         private Button resetButton;
         private Button newGameButton;
-        private Button guessLetterButton;
         private Button guessWordButton;
         private PictureBox hangedMan;
         private Label currentWord;
         private Label scoreLabel;
+        private Label letterLabel;
         private Hangman hangman;
         private Player player;
         private ListBox alphabetList;
@@ -44,13 +44,13 @@ namespace Hangman
             this.StartPosition = FormStartPosition.CenterScreen;
             
             CreateResetButton();
-            CreateGuessLetterButton();
             CreateHangedMan();
             CreateCurrentWord();
             CreateAlphabetList();
             CreateGuessWordBox();
             CreateGuessWordButton();
             CreateNewGameButton();
+            CreateLetterLabel();
             player = new Player(playerScore);
             this.computerScore = computerScore;
             CreateScoreLabel();
@@ -60,6 +60,17 @@ namespace Hangman
             this.MinimumSize = new Size(550, 550);
             this.Text = "Hangman";
             this.BackColor = Color.FromName("white");
+        }
+
+        private void CreateLetterLabel(){
+            letterLabel = new Label();
+            letterLabel.AutoSize = true;
+            letterLabel.Font = new Font("Arial", 14);
+            string text = "Unused Letters:";
+            letterLabel.Text = text;
+            letterLabel.Location = new
+              Point(((this.Width/2)-(letterLabel.Width/2))+this.Width/4 + 10, 10);
+            this.Controls.Add(letterLabel);
         }
 
         private void CreateScoreLabel(){
@@ -82,14 +93,15 @@ namespace Hangman
             this.Controls.Add(guessWordBox);
         }
 
-        private void CreateAlphabetList()
-        {
+        private void CreateAlphabetList(){
             // Create an instance of the ListBox.
             alphabetList = new ListBox();
             // Set the size and location of the ListBox.
-            alphabetList.Size = new System.Drawing.Size(50, 150);
+            alphabetList.Size = new System.Drawing.Size(60, 190);
             alphabetList.Location = new System.Drawing.Point(this.Width -
                 alphabetList.Width - 5, 5);
+            alphabetList.MultiColumn = true; //allow multiple columns
+            alphabetList.ColumnWidth = alphabetList.Width/2 - 10; //half the width of the column
             this.Controls.Add(alphabetList);
         
             // Shutdown the painting of the ListBox as items are added.
@@ -100,6 +112,7 @@ namespace Hangman
               alphabetList.Items.Add(((char)i).ToString());
             // Allow the ListBox to repaint and display the new items.
             alphabetList.EndUpdate();
+            alphabetList.Click += new EventHandler(alphabetList_Click);
         }
 
         //place the iniaital currentWord label
@@ -163,17 +176,6 @@ namespace Hangman
             resetButton.Click += new EventHandler(resetButton_Click);
         }
         
-        //helper method to initialize the guess letter button
-        private void CreateGuessLetterButton(){
-            guessLetterButton = new Button();
-            guessLetterButton.AutoSize = true;
-            guessLetterButton.Location = new
-              Point(((this.Width/2)-(guessLetterButton.Width/2))+this.Width/4, 10);
-            guessLetterButton.Text = "Guess Letter";
-            this.Controls.Add(guessLetterButton);
-            guessLetterButton.Click += new EventHandler(guessLetterButton_Click);
-        }
-
         //called everytime the screen is resized
         protected override void OnResize(EventArgs e){
             base.OnResize(e);
@@ -184,7 +186,7 @@ namespace Hangman
             alphabetList: Top right of the window
             createGuessLetterButton: 3/4 across the top of the window
             guessWordBox: halfway across the top of the screen
-            guessWordButton: halfway across screen below guessWordBox
+            letterLabel: halfway across screen below guessWordBox
             scoreLabel: halfway across and all the way down
              */
             hangedMan.Location = new Point(((this.Width/2)-(PICTURE_WIDTH/2))/2,
@@ -194,13 +196,13 @@ namespace Hangman
                     (this.Height/2)-(currentWord.Height/2));
             alphabetList.Location = new System.Drawing.Point(this.Width -
                 alphabetList.Width - 10, 5);
-            guessLetterButton.Location = new
-              Point(((this.Width/2)-(guessLetterButton.Width/2))+this.Width/4, 10);
             guessWordBox.Location = new 
               Point((this.Width/2)-(guessWordBox.Width/2), 10);
             guessWordButton.Location = new
               Point((this.Width/2)-(guessWordButton.Width/2),
                   guessWordBox.Height + 20);
+            letterLabel.Location = new
+              Point(((this.Width/2)-(letterLabel.Width/2))+this.Width/4 + 10, 10);
             scoreLabel.Location = new
               Point((this.Width/2)-(scoreLabel.Width/2), this.Height -
                   scoreLabel.Height - 30);
@@ -253,7 +255,7 @@ namespace Hangman
 
         //When reset button clicked, reset the game
         private void resetButton_Click(object sender, EventArgs e){
-            string title = "Reset Game";
+            string title = "Reset Round";
             string text = "Are you sure you want to reset the round?";
             MessageBoxButtons buttons = MessageBoxButtons.YesNo;
             //create a message box with the options yes or no to ensure user
@@ -268,14 +270,14 @@ namespace Hangman
           Returns true if the game is over, false otherwise 
          */
         private bool GameOver(bool wordGuessed){
-            string messageTitle = "Game Results";
+            string messageTitle = "Round Result";
             if(wordGuessed){
                 MessageBox.Show("Congratulations you won!", messageTitle);
                 player.UpdateScore();
                 return true;
             }
             else if(hangman.Wrong == 6){ //too many wrong guesses
-                MessageBox.Show("Too many wrong guesses, you lost!\nThe word was: "
+                MessageBox.Show("Oh no, you lost!\nThe word was: "
                     +hangman.Word, messageTitle);
                 computerScore++;
                 return true;
@@ -284,12 +286,13 @@ namespace Hangman
                 return false;
         }
 
-        //onClick method for guessing a new letter 
-        private void guessLetterButton_Click(object sender, EventArgs e){
+        //activated when the alphabet list is clicked, sends a letter to be
+        //guessed based on which one the user clicked on
+        private void alphabetList_Click(object sender, EventArgs e){
             //send current selected letter to Hangman 
             //that returns a bool if the word is fully guessed or not
             if(alphabetList.SelectedItem == null)
-                MessageBox.Show("Please select a letter to guess with!");
+                MessageBox.Show("Please click on which letter\n you want to guess with!");
             else{
                 char guessedLetter = Convert.ToChar(alphabetList.SelectedItem);
                 //update the GUI to reflect the change
